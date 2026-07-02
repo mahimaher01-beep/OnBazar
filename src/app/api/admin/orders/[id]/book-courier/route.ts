@@ -70,8 +70,8 @@ export async function POST(
       area_id: body.area_id,
     };
 
-    const sApiKey = steadfast?.apiKey || process.env.STEADFAST_API_KEY;
-    const sSecretKey = steadfast?.secretKey || process.env.STEADFAST_SECRET_KEY;
+    const sApiKey = steadfast?.apiKey;
+    const sSecretKey = steadfast?.secretKey;
 
     console.log('[Courier Booking] Using Provider:', activeProvider);
     console.log('[Courier Booking] API Key exists:', !!sApiKey);
