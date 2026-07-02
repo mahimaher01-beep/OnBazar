@@ -369,13 +369,19 @@ export default function OrderDetailsDialog({
                                 body: JSON.stringify(payload)
                             });
                             
-                            const data = await res.json();
-                            if (res.ok) {
-                              toast.success(data.message || `${settings?.courierConfig?.activeProvider} booked successfully!`);
-                              onUpdate();
-                              const updateRes = await fetch(`/api/orders/${orderId}`);
-                              if (updateRes.ok) setOrder(await updateRes.json());
-                            } else {
+                                                         const data = await res.json();
+                             if (res.ok) {
+                               const hasFailures = data.results && data.results.some((r) => !r.success);
+                               if (hasFailures) {
+                                 const firstFail = data.results.find((r) => !r.success);
+                                 toast.error(`${data.message}. Reason: ${firstFail?.message || 'Unknown error'}`);
+                               } else {
+                                 toast.success(data.message || `${settings?.courierConfig?.activeProvider} booked successfully!`);
+                               }
+                               onUpdate();
+                               const updateRes = await fetch(`/api/orders/${orderId}`);
+                               if (updateRes.ok) setOrder(await updateRes.json());
+                             } else {
                               toast.error(data.message || 'Courier booking failed');
                             }
                           } catch (e) {
